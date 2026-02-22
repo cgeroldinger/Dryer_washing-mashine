@@ -1,0 +1,39 @@
+alias: Trockner Fertig
+description: ""
+triggers:
+  - entity_id:
+      - sensor.bosch_dryer_programmfortschritt
+    to:
+      - "100"
+    trigger: state
+conditions: []
+actions:
+  - target:
+      entity_id:
+        - notify.christian_s_sonos_arc_sprechen
+        - notify.echo_buro_sprechen
+        - notify.echo_spot_sprechen
+    data:
+      message: |
+        Der Wäschetrockner ist jetzt fertig. Bitte ausräumen nicht vergessen.
+    action: notify.send_message
+  - repeat:
+      count: 5
+      sequence:
+        - target:
+            entity_id: light.stehlampe_2
+          data:
+            brightness_pct: 100
+            rgb_color:
+              - 0
+              - 140
+              - 180
+          action: light.turn_on
+        - delay:
+            seconds: 1
+        - target:
+            entity_id: light.stehlampe_2
+          action: light.turn_off
+        - delay:
+            seconds: 1
+mode: single
