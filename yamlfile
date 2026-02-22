@@ -1,0 +1,257 @@
+type: sections
+title: Trockner/WM
+path: trockner
+sections:
+  - type: grid
+    cards:
+      - type: entities
+        entities:
+          - entity: switch.bosch_dryer_einschalter
+          - entity: sensor.bosch_dryer_betriebszustand
+          - entity: select.bosch_dryer_ausgewahltes_programm
+          - entity: select.bosch_dryer_drying_target
+            name: Trocknungsziel
+          - entity: sensor.shellyp1_keller_switch_0_power
+            name: Power Keller
+          - entity: select.bosch_dryer_wrinkle_guard
+            name: Knitterschutz
+      - type: vertical-stack
+        cards:
+          - type: custom:energy-period-selector-plus
+            period_buttons:
+              - day
+              - week
+              - month
+              - year
+              - custom
+            card_background: true
+            today_button: true
+            prev_next_buttons: true
+            compare_button_type: ""
+            card_mod:
+              style: |
+                ha-card { background: transparent; border: none; }
+          - type: entities
+            title: Geräteverbrauch
+            entities:
+              - type: custom:energy-entity-row
+                entity: sensor.shellyp1_keller_switch_0_energy
+                name: Trockner
+                icon: mdi:tumble-dryer
+              - type: custom:energy-entity-row
+                entity: sensor.shellyp1_keller_switch_0_energy_cost
+                name: Kosten
+                icon: mdi:bitcoin
+              - type: divider
+              - type: custom:energy-entity-row
+                entity: sensor.waschmaschine_summation_delivered
+                name: Waschmaschine
+                icon: mdi:washing-machine
+              - type: custom:energy-entity-row
+                entity: sensor.waschmaschine_summation_delivered_cost
+                name: Kosten
+                icon: mdi:bitcoin
+  - type: grid
+    cards:
+      - type: custom:button-card
+        entity: sensor.bosch_dryer_betriebszustand
+        name: Bosch
+        icon: mdi:fan
+        show_state: true
+        custom_fields:
+          completed: |
+            [[[
+              return "Runs: " + states['sensor.bosch_dryer_completed_count'].state;
+            ]]]
+        styles:
+          card:
+            - background-image: url("/local/trockner.png")
+            - background-size: 70%
+            - background-repeat: no-repeat
+            - background-position: center
+            - width: 350px
+            - height: 350px
+            - border-radius: 16px
+            - position: relative
+            - overflow: hidden
+          icon:
+            - position: absolute
+            - top: 41%
+            - left: 50%
+            - width: 120px
+            - height: 120px
+            - transform: translate(-50%, -50%)
+            - will-change: transform, opacity
+          name:
+            - position: absolute
+            - bottom: 300px
+            - width: 100%
+            - text-align: center
+            - font-weight: bold
+            - color: white
+          state:
+            - position: absolute
+            - bottom: 130px
+            - width: 100%
+            - text-align: center
+            - color: white
+          custom_fields:
+            completed:
+              - position: absolute
+              - bottom: 100px
+              - width: 100%
+              - text-align: center
+              - font-size: 14px
+              - color: white
+        state:
+          - value: Run
+            styles:
+              icon:
+                - color: green
+                - animation: spinPulse 4s linear infinite
+          - value: Inactive
+            styles:
+              icon:
+                - color: lightblue
+                - animation: pulse 10s ease-in-out infinite
+        extra_styles: |
+          /* Rotation + Puls (ACTIVE) */
+          @keyframes spinPulse {
+            0% {
+              transform: translate(-50%, -50%) rotate(0deg) scale(1);
+              opacity: 0.9;
+            }
+            50% {
+              transform: translate(-50%, -50%) rotate(180deg) scale(1.1);
+              opacity: 1;
+            }
+            100% {
+              transform: translate(-50%, -50%) rotate(360deg) scale(1);
+              opacity: 0.9;
+            }
+          }
+
+          /* Ruhiges Atmen (INACTIVE) */
+          @keyframes pulse {
+            0% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 0.5;
+            }
+            50% {
+              transform: translate(-50%, -50%) scale(1.08);
+              opacity: 0.9;
+            }
+            100% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 0.5;
+            }
+          }
+      - type: entities
+        entities:
+          - entity: sensor.bosch_dryer_aktives_programm
+            name: Aktives Programm
+          - entity: sensor.bosch_dryer_verbleibende_programmlaufzeit
+            name: Restlaufzeit
+          - entity: sensor.bosch_dryer_programmfortschritt
+            name:
+              type: entity
+          - entity: binary_sensor.bosch_dryer_lint_filter
+            name: Flusensieb
+          - entity: binary_sensor.bosch_dryer_condensate_container
+            name: Kondenswassertank
+    column_span: 1
+  - type: grid
+    cards:
+      - type: custom:button-card
+        entity: binary_sensor.waschmaschine_lauft
+        name: Waschmaschine
+        icon: mdi:fan
+        show_state: true
+        styles:
+          card:
+            - background-image: url("/local/WM.png")
+            - background-size: 70%
+            - background-repeat: no-repeat
+            - background-position: center
+            - width: 350px
+            - height: 350px
+            - border-radius: 16px
+            - position: relative
+            - overflow: hidden
+          icon:
+            - position: absolute
+            - top: 46%
+            - left: 50.5%
+            - width: 120px
+            - height: 120px
+            - transform: translate(-50%, -50%)
+            - will-change: transform, opacity
+          name:
+            - position: absolute
+            - bottom: 54px
+            - width: 100%
+            - text-align: center
+            - font-weight: bold
+            - color: black
+          state:
+            - position: absolute
+            - bottom: 30px
+            - width: 100%
+            - text-align: center
+            - color: black
+        state:
+          - value: "on"
+            styles:
+              icon:
+                - color: green
+                - animation: spinPulse 4s linear infinite
+          - value: "off"
+            styles:
+              icon:
+                - color: lightblue
+                - animation: pulse 10s ease-in-out infinite
+        extra_styles: |
+          /* Rotation + Puls (on) */
+          @keyframes spinPulse {
+            0% {
+              transform: translate(-50%, -50%) rotate(0deg) scale(1);
+              opacity: 0.9;
+            }
+            50% {
+              transform: translate(-50%, -50%) rotate(180deg) scale(1.1);
+              opacity: 1;
+            }
+            100% {
+              transform: translate(-50%, -50%) rotate(360deg) scale(1);
+              opacity: 0.9;
+            }
+          }
+
+          /* Ruhiges Atmen (off) */
+          @keyframes pulse {
+            0% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 0.5;
+            }
+            50% {
+              transform: translate(-50%, -50%) scale(1.08);
+              opacity: 0.9;
+            }
+            100% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 0.5;
+            }
+          }
+      - type: entities
+        entities:
+          - entity: sensor.waschmaschine_active_power
+cards: []
+badges:
+  - type: custom:mushroom-template-badge
+    content: Home
+    icon: mdi:home
+    color: red
+    tap_action:
+      action: navigate
+      navigation_path: /lovelace-wz/0
+max_columns: 4
